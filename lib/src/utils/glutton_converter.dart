@@ -9,8 +9,8 @@ import 'package:glutton/src/utils/glutton_utils.dart';
 
 class GluttonConverter {
   GluttonEncrypter _encrypter;
-  GluttonUtils _utils;
-  GluttonConverter(GluttonUtils utils, [GluttonEncrypter encrypter])
+  GluttonUtils? _utils;
+  GluttonConverter(GluttonUtils? utils, [GluttonEncrypter? encrypter])
       : _encrypter = encrypter ?? GluttonEncrypter(),
         _utils = utils;
 
@@ -19,18 +19,18 @@ class GluttonConverter {
   /// Convert edible value to string
   String convert(dynamic value) {
     String type;
-    String innerType;
+    String? innerType;
     String unEncryptedValue;
 
     try {
       if (value is List) {
         type = GluttonClassTypeConstant.List;
-        if (value.isNotEmpty && !_utils.isDynamicInnerValue(value))
+        if (value.isNotEmpty && !_utils!.isDynamicInnerValue(value))
           innerType = value.first.runtimeType.toString();
         unEncryptedValue = jsonEncode(value);
       } else if (value is Set) {
         type = GluttonClassTypeConstant.Set;
-        if (value.isNotEmpty && !_utils.isDynamicInnerValue(value))
+        if (value.isNotEmpty && !_utils!.isDynamicInnerValue(value))
           innerType = value.first.runtimeType.toString();
         unEncryptedValue = jsonEncode(value.toList());
       } else if (value is Map) {
@@ -68,7 +68,7 @@ class GluttonConverter {
   }
 
   /// Revert converted edible value to the real type
-  dynamic revert(String encryptedValue) {
+  dynamic revert(String? encryptedValue) {
     if (encryptedValue == null)
       throw GluttonFormatException(
         message: 'Wrong input, cannot receive null value',
@@ -78,16 +78,16 @@ class GluttonConverter {
     List splitted = decryptedValue.split(splitter);
     switch (splitted[0]) {
       case GluttonClassTypeConstant.List:
-        List<dynamic> lst = jsonDecode(splitted[1]);
+        List<dynamic>? lst = jsonDecode(splitted[1]);
         switch (splitted[2]) {
           case 'int':
-            return List<int>.from(lst);
+            return List<int>.from(lst!);
           case 'String':
-            return List<String>.from(lst);
+            return List<String>.from(lst!);
           case 'bool':
-            return List<bool>.from(lst);
+            return List<bool>.from(lst!);
           case 'double':
-            return List<double>.from(lst);
+            return List<double>.from(lst!);
             break;
           default:
             return lst;
@@ -97,16 +97,16 @@ class GluttonConverter {
         return jsonDecode(splitted[1]);
         break;
       case GluttonClassTypeConstant.Set:
-        Set<dynamic> st = jsonDecode(splitted[1]).toSet();
+        Set<dynamic>? st = jsonDecode(splitted[1]).toSet();
         switch (splitted[2]) {
           case 'int':
-            return Set<int>.from(st);
+            return Set<int>.from(st!);
           case 'String':
-            return Set<String>.from(st);
+            return Set<String>.from(st!);
           case 'bool':
-            return Set<bool>.from(st);
+            return Set<bool>.from(st!);
           case 'double':
-            return Set<double>.from(st);
+            return Set<double>.from(st!);
             break;
           default:
             return st;

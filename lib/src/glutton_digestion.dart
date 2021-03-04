@@ -5,9 +5,9 @@ import 'package:glutton/src/utils/glutton_stomach.dart';
 import 'package:glutton/src/utils/glutton_utils.dart';
 
 class GluttonDigestion {
-  GluttonConverter _converter;
-  GluttonUtils _utils;
-  GluttonStomach _stomach;
+  late GluttonConverter _converter;
+  GluttonUtils? _utils;
+  late GluttonStomach _stomach;
 
   GluttonDigestion() {
     _utils = GluttonUtils();
@@ -28,7 +28,7 @@ class GluttonDigestion {
   /// Save value inside glutton stomach
   Future<bool> eat(String key, dynamic value) async {
     /// throw GluttonFormatException if key or value is null or empty
-    if (_utils.isNullOrEmpty(key) || _utils.isNullOrEmpty(value))
+    if (_utils!.isNullOrEmpty(key)! || _utils!.isNullOrEmpty(value)!)
       throw GluttonFormatException(message: GluttonConstant.wrongInputError);
 
     /// Encrypt
@@ -42,15 +42,15 @@ class GluttonDigestion {
   /// Retrieve value inside glutton stomach
   Future<dynamic> vomit(String key, [dynamic defaultValue]) async {
     /// throw GluttonFormatException if key or value is null or empty
-    if (_utils.isNullOrEmpty(key))
+    if (_utils!.isNullOrEmpty(key)!)
       throw GluttonFormatException(message: GluttonConstant.wrongInputError);
 
     /// Retrieve encrypted value inside glutton stomach
-    String convertedValue = await _stomach.vomit(key);
+    String? convertedValue = await (_stomach.vomit(key));
 
     /// Check if retrieved encrypted value exist
     /// Return defaultValue if encrypted value not exist
-    if (_utils.isNullOrEmpty(convertedValue)) return defaultValue;
+    if (_utils!.isNullOrEmpty(convertedValue)!) return defaultValue;
 
     /// Return unencrypted (real) value
     return _converter.revert(convertedValue);
